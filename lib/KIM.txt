@@ -1,0 +1,7 @@
+Keep In Mind
+-------------
+
+-Focus mode is disabled on buttons so that it does not display default border on focus thus it disables focusing by other than mouse.
+-The houses are entered through the doors (the door has no collision shape but there's an object for the detection)
+-Objects TileMap chimney_1 (18) 4 tile high for the reason that otherwise it gets below the roof due to |y-sort|
+-Network.cients = 2D dictionary  (the outer one contains data dicts indexed with client IDs, the inner one contains the player data e.g. name, texture, points, etc)

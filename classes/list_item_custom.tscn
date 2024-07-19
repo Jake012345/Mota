@@ -1,0 +1,149 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://textures/UI/Border and Panels Menu Part 1/01 Border 01.png" type="Texture" id=1]
+[ext_resource path="res://classes/list_item_custom.gd" type="Script" id=2]
+[ext_resource path="res://textures/UI/MainMenuButtons/button_icon_expand_collapse.png" type="Texture" id=3]
+
+[node name="list_item" type="NinePatchRect"]
+anchor_right = 1.0
+margin_bottom = 69.0
+rect_min_size = Vector2( 0, 40 )
+size_flags_horizontal = 3
+texture = ExtResource( 1 )
+region_rect = Rect2( 256, 192, 64, 64 )
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+script = ExtResource( 2 )
+
+[node name="ButtonItem" type="Button" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 6.0
+margin_top = 6.0
+margin_right = -6.0
+margin_bottom = -6.0
+toggle_mode = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = -10.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainerUpper" type="HBoxContainer" parent="VBoxContainer"]
+margin_right = 620.0
+margin_bottom = 32.0
+mouse_filter = 2
+
+[node name="LabelName" type="Label" parent="VBoxContainer/HBoxContainerUpper"]
+margin_top = 9.0
+margin_right = 125.0
+margin_bottom = 23.0
+text = "NULL SERVER NAME"
+
+[node name="ControlPlaceholder" type="Control" parent="VBoxContainer/HBoxContainerUpper"]
+margin_left = 129.0
+margin_right = 413.0
+margin_bottom = 32.0
+mouse_filter = 2
+size_flags_horizontal = 3
+
+[node name="LabelPlayerLimit" type="Label" parent="VBoxContainer/HBoxContainerUpper"]
+margin_left = 417.0
+margin_top = 9.0
+margin_right = 473.0
+margin_bottom = 23.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.2
+text = "0/0"
+align = 1
+valign = 1
+
+[node name="NinePatchRect" type="NinePatchRect" parent="VBoxContainer/HBoxContainerUpper"]
+margin_left = 477.0
+margin_right = 620.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+texture = ExtResource( 1 )
+region_rect = Rect2( 0, 0, 64, 64 )
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="ButtonCollapse" type="Button" parent="VBoxContainer/HBoxContainerUpper/NinePatchRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 3.0
+margin_top = 3.0
+margin_right = -3.0
+margin_bottom = -3.0
+size_flags_horizontal = 3
+icon = ExtResource( 3 )
+icon_align = 1
+
+[node name="VBoxContainerLower" type="VBoxContainer" parent="VBoxContainer"]
+margin_top = 36.0
+margin_right = 620.0
+margin_bottom = 86.0
+mouse_filter = 2
+size_flags_vertical = 3
+
+[node name="LabelDescription" type="Label" parent="VBoxContainer/VBoxContainerLower"]
+margin_right = 620.0
+margin_bottom = 14.0
+theme_type_variation = @"LabelSmall"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/VBoxContainerLower"]
+margin_top = 18.0
+margin_right = 620.0
+margin_bottom = 50.0
+
+[node name="ControlPlaceholderLeft" type="Control" parent="VBoxContainer/VBoxContainerLower/HBoxContainer"]
+margin_right = 226.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="NinePatchRect" type="NinePatchRect" parent="VBoxContainer/VBoxContainerLower/HBoxContainer"]
+margin_left = 230.0
+margin_right = 389.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.7
+texture = ExtResource( 1 )
+region_rect = Rect2( 0, 0, 64, 64 )
+patch_margin_left = 16
+patch_margin_top = 16
+patch_margin_right = 16
+patch_margin_bottom = 16
+
+[node name="ButtonConnect" type="Button" parent="VBoxContainer/VBoxContainerLower/HBoxContainer/NinePatchRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 4.0
+margin_right = -4.0
+margin_bottom = -4.0
+text = "Connect"
+
+[node name="ControlPlaceholderRight" type="Control" parent="VBoxContainer/VBoxContainerLower/HBoxContainer"]
+margin_left = 393.0
+margin_right = 620.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[connection signal="resized" from="." to="." method="resized"]
+[connection signal="pressed" from="ButtonItem" to="." method="expand"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainerUpper/NinePatchRect/ButtonCollapse" to="." method="collapse"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainerLower/HBoxContainer/NinePatchRect/ButtonConnect" to="." method="connect_pressed"]

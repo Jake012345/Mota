@@ -1,0 +1,181 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Node",
+"class": @"Profile",
+"language": @"GDScript",
+"path": "res://classes/profile.gd"
+}, {
+"base": "Node",
+"class": @"ServerAdvertiser",
+"language": @"GDScript",
+"path": "res://addons/LANServerBroadcast/server_advertiser/ServerAdvertiser.gd"
+}, {
+"base": "Node",
+"class": @"ServerListener",
+"language": @"GDScript",
+"path": "res://addons/LANServerBroadcast/server_listener/ServerListener.gd"
+}, {
+"base": "KinematicBody2D",
+"class": @"entity",
+"language": @"GDScript",
+"path": "res://classes/entity.gd"
+}, {
+"base": "NinePatchRect",
+"class": @"list_item_custom",
+"language": @"GDScript",
+"path": "res://classes/list_item_custom.gd"
+} ]
+_global_script_class_icons={
+@"entity": "",
+@"Profile": "",
+@"ServerAdvertiser": "res://addons/LANServerBroadcast/server_advertiser/server_advertiser.png",
+@"ServerListener": "res://addons/LANServerBroadcast/server_listener/server_listener.png",
+@"list_item_custom": ""
+}
+
+[application]
+
+config/name="Mota"
+run/main_scene="res://scenes/MainMenu.tscn"
+config/icon="res://textures/lib/icon.png"
+
+[autoload]
+
+Network="*res://scripts/Network.gd"
+GlobalDatabase="*res://scripts/Database.gd"
+
+[display]
+
+window/size/width=640
+window/size/height=360
+window/stretch/mode="2d"
+window/stretch/aspect="keep"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/LANServerBroadcast/plugin.cfg" )
+
+[gui]
+
+timers/tooltip_delay_sec=0.0
+
+[input]
+
+ui_accept={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_select={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_cancel={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_focus_next={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_focus_prev={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_left={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_right={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_up={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_down={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_page_up={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_page_down={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_home={
+"deadzone": 0.5,
+"events": [  ]
+}
+ui_end={
+"deadzone": 0.5,
+"events": [  ]
+}
+right={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":68,"physical_scancode":0,"unicode":0,"echo":false,"action_match_force_exact":false,"script":null)
+ ]
+}
+left={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":65,"physical_scancode":0,"unicode":0,"echo":false,"action_match_force_exact":false,"script":null)
+ ]
+}
+up={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":87,"physical_scancode":0,"unicode":0,"echo":false,"action_match_force_exact":false,"script":null)
+ ]
+}
+down={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":83,"physical_scancode":0,"unicode":0,"echo":false,"action_match_force_exact":false,"script":null)
+ ]
+}
+ex={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777217,"physical_scancode":0,"unicode":0,"echo":false,"action_match_force_exact":false,"script":null)
+ ]
+}
+eating_cookies={
+"deadzone": 0.5,
+"events": [  ]
+}
+
+[layer_names]
+
+2d_physics/layer_1="world"
+2d_physics/layer_2="objects"
+2d_physics/layer_3="players"
+2d_physics/layer_4="enemies"
+2d_physics/layer_5="projectiles"
+2d_physics/layer_6="areas"
+
+[logging]
+
+file_logging/enable_file_logging=true
+file_logging/log_path="user://logs/pandemonium.txt"
+
+[paint]
+
+color_presets/colors=PoolColorArray(  )
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+vram_compression/import_etc=true
+vram_compression/import_etc2=false
+environment/default_environment="res://default_env.tres"

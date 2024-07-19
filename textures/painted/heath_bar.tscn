@@ -1,0 +1,33 @@
+[gd_scene format=2]
+
+[node name="player_heath_bar" type="PaintProject"]
+size = Vector2i( 75, 15 )
+current_color = Color( 0, 0, 0, 0.129412 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="PaintCanvasBackground" type="PaintCanvasBackground" parent="."]
+size = Vector2i( 75, 15 )
+
+[node name="PaintVisualGrid" type="PaintVisualGrid" parent="."]
+size = Vector2i( 75, 15 )
+
+[node name="border" type="PaintCanvas" parent="."]
+size = Vector2i( 75, 15 )
+brush_prefab = 2
+brush_size = 93
+image_data_compressed = PoolByteArray( 75, 0, 0, 0, 15, 0, 0, 0, 148, 17, 0, 0, 22, 0, 1, 0, 31, 255, 4, 0, 255, 9, 8, 2, 0, 15, 40, 1, 255, 10, 4, 28, 1, 0, 2, 0, 4, 12, 0, 15, 8, 0, 255, 38, 15, 2, 0, 241, 15, 60, 2, 17, 15, 2, 0, 249, 15, 48, 1, 9, 15, 2, 0, 255, 2, 15, 48, 1, 5, 15, 2, 0, 255, 2, 15, 44, 1, 255, 255, 255, 140, 0, 156, 3, 15, 2, 0, 249, 0, 16, 1, 15, 4, 0, 13, 15, 2, 0, 241, 15, 36, 1, 13, 15, 32, 0, 255, 14, 0, 2, 0, 15, 36, 1, 255, 14, 0, 32, 1, 8, 2, 0, 0, 16, 0, 15, 4, 0, 255, 6, 80, 0, 0, 0, 0, 0 )
+
+[node name="inner" type="PaintCanvas" parent="."]
+size = Vector2i( 75, 15 )
+brush_prefab = 2
+brush_size = 26
+image_data_compressed = PoolByteArray( 75, 0, 0, 0, 15, 0, 0, 0, 148, 17, 0, 0, 31, 0, 1, 0, 255, 255, 255, 135, 79, 154, 19, 19, 255, 4, 0, 237, 15, 155, 4, 17, 15, 36, 1, 237, 8, 0, 1, 15, 48, 1, 9, 8, 40, 0, 15, 12, 0, 245, 15, 48, 1, 5, 15, 32, 1, 245, 8, 8, 1, 15, 44, 1, 255, 255, 255, 140, 0, 2, 0, 8, 172, 3, 15, 12, 0, 237, 0, 16, 1, 15, 2, 0, 13, 15, 36, 1, 237, 0, 0, 1, 15, 36, 1, 13, 15, 2, 0, 255, 255, 255, 99, 80, 0, 0, 0, 0, 0 )
+
+[node name="over" type="PaintCanvas" parent="."]
+size = Vector2i( 75, 15 )
+brush_prefab = 2
+brush_size = 69
+current_tool = 1
+image_data_compressed = PoolByteArray( 75, 0, 0, 0, 15, 0, 0, 0, 148, 17, 0, 0, 31, 0, 1, 0, 255, 255, 255, 134, 31, 109, 4, 0, 255, 1, 15, 2, 0, 1, 31, 93, 4, 0, 255, 1, 15, 2, 0, 5, 31, 76, 4, 0, 255, 1, 15, 2, 0, 5, 31, 60, 4, 0, 255, 1, 15, 2, 0, 5, 31, 45, 4, 0, 255, 1, 15, 2, 0, 5, 31, 33, 4, 0, 255, 1, 15, 2, 0, 5, 31, 20, 4, 0, 255, 1, 15, 2, 0, 255, 58, 31, 14, 4, 0, 255, 1, 15, 2, 0, 255, 255, 255, 112, 80, 0, 0, 0, 0, 0 )

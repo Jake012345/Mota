@@ -1,0 +1,12 @@
+CREDITS:
+
+LAN Server broadcast plugin:
+https://github.com/Wavesonics/LANServerBroadcast
+
+GUI art:
+https://bdragon1727.itch.io/border-and-panels-menu-part-1
+
+Ingame art:
+- tileset: 
+- characters: 
+-tileset + characters: https://raou.itch.io/small-adventure
