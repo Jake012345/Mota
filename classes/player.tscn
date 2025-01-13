@@ -127,3 +127,7 @@ shape = SubResource( 1 )
 [node name="Texture" type="AnimatedSprite" parent="."]
 frames = SubResource( 18 )
 animation = @"walk_down"
+frame = 2
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2( 5, 5 )

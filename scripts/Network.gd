@@ -3,7 +3,7 @@ extends Node
 var ip: String = "127.0.0.1"
 var default_port: int = 57546
 var port: int = default_port
-var client_limit: int = 10
+var client_limit: int = 1
 var server_description: String = ""
 var peer: NetworkedMultiplayerENet = NetworkedMultiplayerENet.new()
 var server_id: int = 1

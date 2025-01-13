@@ -31,6 +31,8 @@ func load_in_world():
          current_world.owner = self
          print("World loaded in successfully")
          world_is_loaded = true
+         if current_world.has_method("generate_map"):
+            current_world.call("generate_map")       #### WILL PUT IT ELSEWHERE
          if current_world.has_method("load_in_enemies"):
             current_world.call("load_in_enemies")
          else:
