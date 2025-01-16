@@ -130,4 +130,4 @@ animation = @"walk_down"
 frame = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2( 5, 5 )
+zoom = Vector2( 10, 10 )

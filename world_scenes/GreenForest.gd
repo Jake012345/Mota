@@ -89,57 +89,80 @@ func _physics_process(delta):
 func load_in_enemies():   ### hehe will be rewritten soon ofc
    pass
 
+func find_nearest_point(point: Vector2, points: Array) -> Array:
+   var nearest_point: Vector2 = Vector2.ZERO
+   var nearest_distance: float = INF
+
+   for other_point in points:
+      if point == other_point:
+         continue  # Skip the current point
+
+      var distance = point.distance_to(other_point)
+      if distance < nearest_distance:
+         nearest_distance = distance
+         nearest_point = other_point
+   return [nearest_point, nearest_distance]
+
 func generate_map(params: Dictionary = generator_params):
    var gen_tileset: TileSet = TileSet.new()
    parse_dict(params, gen_tileset)
    map.cell_y_sort = true
    map.tile_set = gen_tileset
-   ## using noise
+   ## using noise to generate aras
+   var area_markers:Dictionary = generate_areas(params)
+   apply_areas_on_map(area_markers)
+   pass
+
+func generate_areas(params: Dictionary) -> Dictionary:
    var area_markers: Dictionary = {}
    for i in range(params["s_map_size_x"]):  #creating the noise value set
       for j in range(params["s_map_size_y"]): #### !!!!!!!!!!!!!!!!!!!!!!!!!!!### Set Density and rarity for biomes dynamically
          if not int(rand_range(0, 10)):
             area_markers[Vector2(i, j)] = "0"
+            continue
          if not int(rand_range(0, 10)):
             area_markers[Vector2(i, j)] = "1"
+            continue
          if not int(rand_range(0, 10)):
             area_markers[Vector2(i, j)] = "2"
-            
-   # A kulcsok listája, amit szűrni fogunk
-   var keys: Array = area_markers.keys()
-   # A szűrt kulcsokat tároló lista
-   var filtered_keys = []
-   # Addig folytatjuk, amíg van elem a keys listában
-   while keys.size() > 0:
-      # Az aktuális vizsgálandó kulcs az első elem a listában
-      var key: Vector2 = keys.pop_front()  # Eltávolítjuk és elmentjük
-      # Hozzáadjuk ezt a kulcsot a szűrt kulcsok listájához
-      filtered_keys.append(key)
-      # Készítünk egy új listát, amely csak a megfelelő távolságú kulcsokat tartalmazza
-      var new_keys: Array = []
+            continue
+
+   var points = area_markers.keys()  # List of Vector2 keys
+   while points.size() > 1:  # Loop while there are more than one point
+      var current_point = points[0]  # Start from the first point
+      var tmp = find_nearest_point(current_point, points)
+      var nearest_point: Vector2 = tmp[0]
+      var nearest_distance: float = tmp[1]
       
-      # Végigmegyünk a maradék kulcsokon
-      for i in keys:
-         # Megnézzük, hogy a 'key' és az 'i' közötti távolság legalább "limit"-e
-         if key.distance_to(i) >= generator_params["areas"][area_markers[i]]["s_min_size"] + \
-            generator_params["areas"][area_markers[key]]["s_min_size"]:
-               # Ha a távolság nagyobb vagy egyenlő 1000-rel, hozzáadjuk az új listához
-               new_keys.append(i)
-      
-      # A maradék kulcsokat tartalmazó új listával felülírjuk a keys változót
-      keys = new_keys
+      var delete_range = generator_params["areas"] \
+       [area_markers[current_point]]["s_min_size"] + \
+       generator_params["areas"] \
+       [area_markers[nearest_point]]["s_min_size"]
 
-   # Miután a kulcsokat kiszűrtük, a szűrt elemek alapján módosítjuk az eredeti dictionary-t
-   for i in area_markers.keys():
-      # Ha egy kulcs nincs benne a szűrt listában, eltávolítjuk az eredeti dictionary-ből
-      if not filtered_keys.has(i):
-         area_markers.erase(i)
+      if nearest_point and nearest_distance <= delete_range:
+         # Delete the nearest point from the dictionary and the list
+         area_markers.erase(nearest_point)
+         points.erase(nearest_point)
+      else:
+         # If no points to delete, move to the next point
+         points.pop_front()
+   return area_markers
+   pass
 
+func apply_areas_on_map(area_markers: Dictionary):
+   # Setting area centers on map
+   for i in area_markers:
+      map.set_cellv(i, generator_params["default_map_tiles"][area_markers[i]])
 
-
-   for i in area_markers:  # applying noise result
-      var area_id = area_markers[i]
-      map.set_cellv(i, generator_params["default_map_tiles"][str(area_id)]) # not default map tiles is the best here
+   # Filling the map up with nearest area's elements
+   for i in range(generator_params["s_map_size_x"]):
+      for j in range(generator_params["s_map_size_y"]):
+         var closest_area: Vector2 = Vector2.ZERO
+         for area in area_markers:
+               if closest_area == Vector2.ZERO or \
+                  Vector2(i, j).distance_squared_to(area) < Vector2(i, j).distance_squared_to(closest_area):
+                  closest_area = area
+         map.set_cell(i, j, map.get_cellv(closest_area))
    pass
 
 func parse_dict(dict: Dictionary, tileset: TileSet): # changing the res-paths to their cell index after importing them
