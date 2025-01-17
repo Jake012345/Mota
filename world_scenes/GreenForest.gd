@@ -43,7 +43,7 @@ var generator_params: Dictionary = {
          "s_difficulty": 1,
          "s_min_size": 10,
          "s_max_size": 20,
-         "s_rarity": 1,
+         "s_weight": 1,
          "s_is_bordered": true,
          "border": {            # <--- only if IS_BORDERED
             "right": {
@@ -68,18 +68,22 @@ var generator_params: Dictionary = {
          "s_difficulty": 1,
          "s_min_size": 10,
          "s_max_size": 20,
-         "s_rarity": 1,
+         "s_weight": 1,
          "s_is_bordered": false
         },
       "2": { # area index 2
          "s_difficulty": 1,
          "s_min_size": 10,
          "s_max_size": 20,
-         "s_rarity": 1,
+         "s_weight": 1,
          "s_is_bordered": false
         }
      }
   }
+
+func _ready():
+   randomize()
+   pass
 
 func _physics_process(delta):
    
@@ -115,17 +119,29 @@ func generate_map(params: Dictionary = generator_params):
 
 func generate_areas(params: Dictionary) -> Dictionary:
    var area_markers: Dictionary = {}
+   var weight_sum: int = 0
+   var smallest_area_size: int = max(generator_params["s_map_size_x"], generator_params["s_map_size_y"])
+   for i in generator_params["areas"]:
+      weight_sum += generator_params["areas"][i]["s_weight"]
+      if generator_params["areas"][i]["s_min_size"] < smallest_area_size:
+         smallest_area_size = generator_params["areas"][i]["s_min_size"]
+
    for i in range(params["s_map_size_x"]):  #creating the noise value set
       for j in range(params["s_map_size_y"]): #### !!!!!!!!!!!!!!!!!!!!!!!!!!!### Set Density and rarity for biomes dynamically
-         if not int(rand_range(0, 10)):
-            area_markers[Vector2(i, j)] = "0"
-            continue
-         if not int(rand_range(0, 10)):
-            area_markers[Vector2(i, j)] = "1"
-            continue
-         if not int(rand_range(0, 10)):
-            area_markers[Vector2(i, j)] = "2"
-            continue
+         if not randi() % smallest_area_size:
+            var area_seed: int = randi() % weight_sum
+            var area_index: int = -1
+            var cumulative_weight: int = 0
+            # Assign area type based on weight
+            for index in generator_params["areas"].keys():
+               cumulative_weight += generator_params["areas"][index]["s_weight"]
+               if area_seed < cumulative_weight:
+                  area_index = int(index)
+                  break
+
+            # If area_index is valid, add it to area_markers
+            if area_index != -1:
+               area_markers[Vector2(i, j)] = str(area_index)
 
    var points = area_markers.keys()  # List of Vector2 keys
    while points.size() > 1:  # Loop while there are more than one point
