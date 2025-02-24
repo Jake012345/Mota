@@ -4,8 +4,8 @@ var spawn_point: Vector2 = Vector2.ZERO
 onready var map: TileMap = get_node("World")
 
 var generator_params: Dictionary = {
-   "s_map_size_x": 100,           #  "s_..." s_ stands for setting, telling the algorythm taht it is not a loadable resource
-   "s_map_size_y": 100,
+   "s_map_size_x": 500,           #  "s_..." s_ stands for setting, telling the algorythm taht it is not a loadable resource
+   "s_map_size_y": 500,
    "s_is_map_bordered": true,
    "default_map_borders": {
       "right": {
@@ -41,9 +41,8 @@ var generator_params: Dictionary = {
    "areas": {
       "0": { # area index 0
          "s_difficulty": 1,
-         "s_min_size": 10,
-         "s_max_size": 20,
-         "s_weight": 1,
+         "s_size": 20,
+         "s_weight": 2,
          "s_is_bordered": true,
          "border": {            # <--- only if IS_BORDERED
             "right": {
@@ -66,15 +65,13 @@ var generator_params: Dictionary = {
         },
       "1": { # area index 1
          "s_difficulty": 1,
-         "s_min_size": 10,
-         "s_max_size": 20,
+         "s_size": 10,
          "s_weight": 1,
          "s_is_bordered": false
         },
       "2": { # area index 2
          "s_difficulty": 1,
-         "s_min_size": 10,
-         "s_max_size": 20,
+         "s_size": 10,
          "s_weight": 1,
          "s_is_bordered": false
         }
@@ -93,19 +90,6 @@ func _physics_process(delta):
 func load_in_enemies():   ### hehe will be rewritten soon ofc
    pass
 
-func find_nearest_point(point: Vector2, points: Array) -> Array:
-   var nearest_point: Vector2 = Vector2.ZERO
-   var nearest_distance: float = INF
-
-   for other_point in points:
-      if point == other_point:
-         continue  # Skip the current point
-
-      var distance = point.distance_to(other_point)
-      if distance < nearest_distance:
-         nearest_distance = distance
-         nearest_point = other_point
-   return [nearest_point, nearest_distance]
 
 func generate_map(params: Dictionary = generator_params):
    var gen_tileset: TileSet = TileSet.new()
@@ -113,62 +97,92 @@ func generate_map(params: Dictionary = generator_params):
    map.cell_y_sort = true
    map.tile_set = gen_tileset
    ## using noise to generate aras
-   var area_markers:Dictionary = generate_areas(params)
+   var area_markers: Dictionary = generate_areas(params)
    apply_areas_on_map(area_markers)
    pass
 
+func find_nearest_point(point: Vector2, points: Array, cell_map: Dictionary, cell_size: int) -> Array:
+   var nearest_point: Vector2i = Vector2i(INF, INF)
+   var nearest_distance: float = INF
+
+   # Determine the cell of the current point
+   var cell = Vector2(point.x / cell_size, point.y / cell_size)
+
+   # Check neighboring cells in a 3x3 grid
+   for x_offset in range(-1, 2):
+      for y_offset in range(-1, 2):
+         var neighbor_cell = cell + Vector2(x_offset, y_offset)
+         if not cell_map.has(neighbor_cell):
+            continue
+
+         # Check points in the neighboring cell
+         for other_point in cell_map[neighbor_cell]:
+            if point == other_point:
+               continue
+
+            var distance = point.distance_to(other_point)
+            if distance < nearest_distance:
+               nearest_distance = distance
+               nearest_point = other_point
+
+   return [nearest_point, nearest_distance]
+
 func generate_areas(params: Dictionary) -> Dictionary:
-   var area_markers: Dictionary = {}
+   var area_markers: Array = [] # of Vector2 : x, y
+   var area_marker_parser: Array = []  # index based matching, contains the area_id
+   var area_cumulative_weights: Array = []
+   var area_cumulative_weight_sum: int = 0
+   var cell_map: Dictionary = {} # Spatial partitioning grid
+   var cell_size: int = 50  # Adjust based on your map size and density
    var weight_sum: int = 0
-   var smallest_area_size: int = max(generator_params["s_map_size_x"], generator_params["s_map_size_y"])
-   for i in generator_params["areas"]:
-      weight_sum += generator_params["areas"][i]["s_weight"]
-      if generator_params["areas"][i]["s_min_size"] < smallest_area_size:
-         smallest_area_size = generator_params["areas"][i]["s_min_size"]
+   var greatest_area_size: int = 0
+   
+   #calculate greatest area size and weight helpers
+   for i in params["areas"]:
+      greatest_area_size = max(greatest_area_size, params["areas"][i]["s_size"])
+      weight_sum += params["areas"][i]["s_weight"]
+      area_cumulative_weights.append(params["areas"][i]["s_weight"])
+      area_cumulative_weight_sum += params["areas"][i]["s_weight"]
 
-   for i in range(params["s_map_size_x"]):  #creating the noise value set
-      for j in range(params["s_map_size_y"]): #### !!!!!!!!!!!!!!!!!!!!!!!!!!!### Set Density and rarity for biomes dynamically
-         if not randi() % smallest_area_size:
-            var area_seed: int = randi() % weight_sum
-            var area_index: int = -1
-            var cumulative_weight: int = 0
-            # Assign area type based on weight
-            for index in generator_params["areas"].keys():
-               cumulative_weight += generator_params["areas"][index]["s_weight"]
-               if area_seed < cumulative_weight:
-                  area_index = int(index)
+   # 
+   for i in range(params["s_map_size_x"]):
+      for j in range(params["s_map_size_y"]):
+         var set: bool = false
+         if not area_markers.empty(): # selecting all area centers based on distance to already selected ones
+            var distance_ok: bool = true
+            for tmp_area_index in range(area_markers.size()):
+               var min_distance: float = pow(params["areas"][str(area_marker_parser[tmp_area_index])]["s_size"] + greatest_area_size, 2)
+               if Vector2(area_markers[tmp_area_index]).distance_squared_to(Vector2(i, j)) < min_distance:
+                  distance_ok = false
+            if distance_ok:
+               area_markers.append(Vector2i(i, j))
+               set = true
+         else:  # selecting the first ever area (top left) with 10% chance (prob wont affect anything anyways)
+            if not randi() % 10:
+               area_markers.append(Vector2i(i, j))
+               set = true
+         if set:
+            var selected: int = area_cumulative_weights.size() - 1 # the last as base value
+            var weight_seed: int = randi() % area_cumulative_weight_sum
+            var weight_counter: int = 0
+            for c in range(area_cumulative_weights.size()):
+               weight_counter += area_cumulative_weights[c]
+               if weight_counter > weight_seed:
+                  selected = c
                   break
-
-            # If area_index is valid, add it to area_markers
-            if area_index != -1:
-               area_markers[Vector2(i, j)] = str(area_index)
-
-   var points = area_markers.keys()  # List of Vector2 keys
-   while points.size() > 1:  # Loop while there are more than one point
-      var current_point = points[0]  # Start from the first point
-      var tmp = find_nearest_point(current_point, points)
-      var nearest_point: Vector2 = tmp[0]
-      var nearest_distance: float = tmp[1]
-      
-      var delete_range = generator_params["areas"] \
-       [area_markers[current_point]]["s_min_size"] + \
-       generator_params["areas"] \
-       [area_markers[nearest_point]]["s_min_size"]
-
-      if nearest_point and nearest_distance <= delete_range:
-         # Delete the nearest point from the dictionary and the list
-         area_markers.erase(nearest_point)
-         points.erase(nearest_point)
-      else:
-         # If no points to delete, move to the next point
-         points.pop_front()
-   return area_markers
+            area_marker_parser.append(selected)
+   
+   var return_dict: Dictionary = {}
+   for i in range(area_markers.size()):
+      return_dict[area_markers[i]] = area_marker_parser[i]
+   return return_dict
    pass
+
 
 func apply_areas_on_map(area_markers: Dictionary):
    # Setting area centers on map
-   for i in area_markers:
-      map.set_cellv(i, generator_params["default_map_tiles"][area_markers[i]])
+   for i in area_markers.keys():
+      map.set_cellv(i, generator_params["default_map_tiles"][str(area_markers[i])])
 
    # Filling the map up with nearest area's elements
    for i in range(generator_params["s_map_size_x"]):

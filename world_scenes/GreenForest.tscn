@@ -625,7 +625,7 @@ tile_set = SubResource( 69 )
 cell_size = Vector2( 32, 32 )
 format = 1
 
-[node name="Objects" type="TileMap" parent="World"]
+[node name="Objects" type="TileMap" parent="."]
 tile_set = SubResource( 18 )
 cell_size = Vector2( 16, 16 )
 cell_y_sort = true
