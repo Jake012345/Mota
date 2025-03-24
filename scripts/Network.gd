@@ -89,7 +89,7 @@ func host_server(server_port: int = port, player_limit: int = client_limit):   #
       advertise_server(server_port, server_name)
    pass
 
-func connect_to_server(server_ip: String = ip, server_port: int = port):
+func connect_to_server(server_ip: String = ip, server_port: int = port):   
    reset_peer()
    var error = peer.create_client(server_ip, server_port)
    if error == 0:

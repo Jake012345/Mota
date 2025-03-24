@@ -18,6 +18,11 @@ var ready_for_game: bool = false
 var server_player_directions: Dictionary = {}
 var server_player_positions: Dictionary = {}
 var max_name_char: int = 15
+var chunk_size: int  # Needs to be synced as well
+var map_cell_size: int = 32
+var map_size_x: int
+var map_size_y: int
+
 
 func _ready():
    connect("profile_chosen", self, "refresh_own_data")
